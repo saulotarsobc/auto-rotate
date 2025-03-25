@@ -41,7 +41,15 @@ def configure_monitor():
             }), 400
 
         # Configurar a rotação do monitor
-        screen = rotatescreen.get_primary_display()
+        screens = rotatescreen.get_displays()  # Pega todos os monitores
+        
+        # Verificar se o número do monitor é válido
+        if monitor_number < 0 or monitor_number >= len(screens):
+            return jsonify({
+                'error': f'Monitor {monitor_number} não encontrado. Total de monitores: {len(screens)}'
+            }), 400
+
+        screen = screens[monitor_number]  # Seleciona o monitor específico
         angle = POSITION_TO_ANGLE[position]
         screen.rotate_to(angle)
 
@@ -50,7 +58,8 @@ def configure_monitor():
             'message': f'Monitor {monitor_number} configurado para posição {position}',
             'data': {
                 'monitor': monitor_number,
-                'position': position
+                'position': position,
+                'total_monitors': len(screens)
             }
         })
 
