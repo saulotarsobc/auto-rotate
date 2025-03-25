@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify, render_template
 from enum import Enum
 import rotatescreen
 from screeninfo import get_monitors
-import json
 
 app = Flask(__name__)
 
@@ -64,8 +63,6 @@ def get_monitors_info():
 def configure_monitor():
     try:
         data = request.get_json()
-
-        print(data)
         
         # Validar os dados recebidos
         if not data or 'monitor' not in data or 'position' not in data:
