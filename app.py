@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from enum import Enum
+import rotatescreen
 
 app = Flask(__name__)
 
@@ -8,6 +9,14 @@ class MonitorPosition(Enum):
     PORTRAIT = "portrait" # Retrato normal
     LANDSCAPE_FLIPPED = "landscape_flipped" # Paisagem virado
     PORTRAIT_FLIPPED = "portrait_flipped" # Retrato virado
+
+# Mapeamento de posições para ângulos
+POSITION_TO_ANGLE = {
+    MonitorPosition.LANDSCAPE.value: 0,
+    MonitorPosition.PORTRAIT.value: 90,
+    MonitorPosition.LANDSCAPE_FLIPPED.value: 180,
+    MonitorPosition.PORTRAIT_FLIPPED.value: 270
+}
 
 @app.route('/monitor', methods=['POST'])
 def configure_monitor():
@@ -31,8 +40,11 @@ def configure_monitor():
                 'error': 'Posição inválida. Posições válidas são: landscape, portrait, landscape_flipped, portrait_flipped'
             }), 400
 
-        # Aqui você pode adicionar a lógica para configurar o monitor
-        # Por enquanto, apenas retornamos os dados recebidos
+        # Configurar a rotação do monitor
+        screen = rotatescreen.get_primary_display()
+        angle = POSITION_TO_ANGLE[position]
+        screen.rotate_to(angle)
+
         return jsonify({
             'status': 'success',
             'message': f'Monitor {monitor_number} configurado para posição {position}',
