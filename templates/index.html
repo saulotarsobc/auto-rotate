@@ -2,48 +2,123 @@
 <html>
   <head>
     <title>Monitor Control</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
       body {
         font-family: Arial, sans-serif;
         max-width: 800px;
-        margin: 20px auto;
-        padding: 0 20px;
-      }
-      .container {
-        background-color: #f5f5f5;
+        margin: 0 auto;
         padding: 20px;
+        background-color: #f0f2f5;
+      }
+
+      .container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        color: #1a73e8;
+        margin-bottom: 24px;
+        font-size: 24px;
+        text-align: center;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: #5f6368;
+        font-size: 16px;
+      }
+
+      select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #dadce0;
         border-radius: 8px;
+        font-size: 16px;
+        margin-bottom: 16px;
+        background-color: white;
       }
-      select,
+
       button {
-        padding: 8px;
-        margin: 5px;
-        border-radius: 4px;
-        border: 1px solid #ddd;
-      }
-      button {
-        background-color: #4caf50;
+        width: 100%;
+        padding: 12px;
+        background-color: #1a73e8;
         color: white;
         border: none;
+        border-radius: 8px;
+        font-size: 16px;
         cursor: pointer;
+        transition: background-color 0.3s;
       }
+
       button:hover {
-        background-color: #45a049;
+        background-color: #1557b0;
       }
+
       #response {
         margin-top: 20px;
-        padding: 10px;
-        border-radius: 4px;
+        padding: 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        display: none;
       }
+
       .success {
-        background-color: #dff0d8;
-        border: 1px solid #d6e9c6;
-        color: #3c763d;
+        background-color: #e6f4ea;
+        border: 1px solid #137333;
+        color: #137333;
+        display: block !important;
       }
+
       .error {
-        background-color: #f2dede;
-        border: 1px solid #ebccd1;
-        color: #a94442;
+        background-color: #fce8e6;
+        border: 1px solid #c5221f;
+        color: #c5221f;
+        display: block !important;
+      }
+
+      /* Estilos específicos para mobile */
+      @media (max-width: 480px) {
+        body {
+          padding: 16px;
+        }
+
+        .container {
+          padding: 16px;
+        }
+
+        h1 {
+          font-size: 20px;
+        }
+
+        select,
+        button {
+          font-size: 14px;
+          padding: 10px;
+        }
+
+        label {
+          font-size: 14px;
+        }
+
+        #response {
+          font-size: 13px;
+          padding: 12px;
+        }
       }
     </style>
   </head>
@@ -51,7 +126,7 @@
     <div class="container">
       <h1>Controle de Monitor</h1>
 
-      <div>
+      <div class="form-group">
         <label for="monitor">Selecione o Monitor:</label>
         <select id="monitor">
           {% for monitor in monitors %}
@@ -60,7 +135,7 @@
         </select>
       </div>
 
-      <div>
+      <div class="form-group">
         <label for="position">Selecione a Posição:</label>
         <select id="position">
           {% for position in positions %}
@@ -78,6 +153,11 @@
       function configureMonitor() {
         const monitor = document.getElementById("monitor").value;
         const position = document.getElementById("position").value;
+        const button = document.querySelector("button");
+
+        // Desabilita o botão durante a requisição
+        button.disabled = true;
+        button.textContent = "Aplicando...";
 
         fetch("/monitor", {
           method: "POST",
@@ -105,6 +185,11 @@
             responseDiv.className = "error";
             responseDiv.textContent =
               "Erro ao processar a requisição: " + error;
+          })
+          .finally(() => {
+            // Reabilita o botão após a requisição
+            button.disabled = false;
+            button.textContent = "Aplicar Configuração";
           });
       }
     </script>
