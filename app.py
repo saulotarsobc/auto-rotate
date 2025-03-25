@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, render_template
 from enum import Enum
 import rotatescreen
+from screeninfo import get_monitors
+import json
 
 app = Flask(__name__)
 
@@ -18,12 +20,45 @@ POSITION_TO_ANGLE = {
     MonitorPosition.PORTRAIT_FLIPPED.value: 270
 }
 
+def get_monitor_info():
+    system_monitors = get_monitors()
+    
+    monitors_info = []
+    for idx, monitor in enumerate(system_monitors):
+        monitor_info = {
+            'id': idx,
+            'name': monitor.name if monitor.name else f'Monitor {idx}',
+            'width': monitor.width,
+            'height': monitor.height,
+            'width_mm': monitor.width_mm,
+            'height_mm': monitor.height_mm,
+            'is_primary': monitor.is_primary,
+            'resolution': f'{monitor.width}x{monitor.height}',
+            'aspect_ratio': f'{monitor.width/monitor.height:.2f}:1'
+        }
+        monitors_info.append(monitor_info)
+    
+    return monitors_info
+
 @app.route('/', methods=['GET'])
 def home():
-    screens = rotatescreen.get_displays()
-    return render_template('index.html', 
-                         monitors=range(len(screens)),
+    monitors_info = get_monitor_info()
+    return render_template('index.html',
+                         monitors=monitors_info,
                          positions=[pos.value for pos in MonitorPosition])
+
+@app.route('/monitors', methods=['GET'])
+def get_monitors_info():
+    try:
+        monitors_info = get_monitor_info()
+        return jsonify({
+            'status': 'success',
+            'data': monitors_info
+        })
+    except Exception as e:
+        return jsonify({
+            'error': f'Erro ao obter informações dos monitores: {str(e)}'
+        }), 500
 
 @app.route('/monitor', methods=['POST'])
 def configure_monitor():
