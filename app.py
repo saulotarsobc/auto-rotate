@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from enum import Enum
 import rotatescreen
 
@@ -17,6 +17,13 @@ POSITION_TO_ANGLE = {
     MonitorPosition.LANDSCAPE_FLIPPED.value: 180,
     MonitorPosition.PORTRAIT_FLIPPED.value: 270
 }
+
+@app.route('/', methods=['GET'])
+def home():
+    screens = rotatescreen.get_displays()
+    return render_template('index.html', 
+                         monitors=range(len(screens)),
+                         positions=[pos.value for pos in MonitorPosition])
 
 @app.route('/monitor', methods=['POST'])
 def configure_monitor():
@@ -69,4 +76,4 @@ def configure_monitor():
         }), 500
 
 if __name__ == '__main__':
-    app.run(debug=True) 
+    app.run(host='0.0.0.0', port=80, debug=True) 

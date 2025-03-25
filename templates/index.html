@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Monitor Control</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 0 20px;
+      }
+      .container {
+        background-color: #f5f5f5;
+        padding: 20px;
+        border-radius: 8px;
+      }
+      select,
+      button {
+        padding: 8px;
+        margin: 5px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+      }
+      button {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      #response {
+        margin-top: 20px;
+        padding: 10px;
+        border-radius: 4px;
+      }
+      .success {
+        background-color: #dff0d8;
+        border: 1px solid #d6e9c6;
+        color: #3c763d;
+      }
+      .error {
+        background-color: #f2dede;
+        border: 1px solid #ebccd1;
+        color: #a94442;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Controle de Monitor</h1>
+
+      <div>
+        <label for="monitor">Selecione o Monitor:</label>
+        <select id="monitor">
+          {% for monitor in monitors %}
+          <option value="{{ monitor }}">Monitor {{ monitor }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label for="position">Selecione a Posição:</label>
+        <select id="position">
+          {% for position in positions %}
+          <option value="{{ position }}">{{ position }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <button onclick="configureMonitor()">Aplicar Configuração</button>
+
+      <div id="response"></div>
+    </div>
+
+    <script>
+      function configureMonitor() {
+        const monitor = document.getElementById("monitor").value;
+        const position = document.getElementById("position").value;
+
+        fetch("/monitor", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            monitor: parseInt(monitor),
+            position: position,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            const responseDiv = document.getElementById("response");
+            if (data.error) {
+              responseDiv.className = "error";
+              responseDiv.textContent = data.error;
+            } else {
+              responseDiv.className = "success";
+              responseDiv.textContent = data.message;
+            }
+          })
+          .catch((error) => {
+            const responseDiv = document.getElementById("response");
+            responseDiv.className = "error";
+            responseDiv.textContent =
+              "Erro ao processar a requisição: " + error;
+          });
+      }
+    </script>
+  </body>
+</html>
