@@ -6,6 +6,7 @@ from enum import Enum
 import threading
 import pystray
 from PIL import Image
+import io
 
 from flask import Flask, request, jsonify, render_template
 
@@ -25,13 +26,15 @@ POSITION_TO_ANGLE = {
     MonitorPosition.PORTRAIT_FLIPPED.value: 270
 }
 
+
 def create_tray_icon():
-    # Carrega a imagem do ícone (certifique-se de que o caminho esteja correto)
-    icon_image = Image.open("icon.ico")
+    icon_path = os.path.join(os.path.dirname(__file__), 'icon.ico')
+    with open(icon_path, "rb") as f:
+        image_data = f.read()
+    icon_image = Image.open(io.BytesIO(image_data))
     
     def on_exit(icon, item):
         icon.stop()
-        # Se desejar, termine o app (pode usar sys.exit() ou outra lógica)
         os._exit(0)
     
     menu = pystray.Menu(pystray.MenuItem("Sair", on_exit))
@@ -126,4 +129,4 @@ if __name__ == '__main__':
     tray_thread = threading.Thread(target=create_tray_icon, daemon=True)
     tray_thread.start()
     
-    app.run(host='0.0.0.0', port=5410, debug=False) 
+    app.run(host='0.0.0.0', port=5410, debug=False)
