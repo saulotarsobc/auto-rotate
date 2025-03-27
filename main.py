@@ -8,12 +8,12 @@ from flask import Flask, request, jsonify, render_template
 app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), 'templates'))
 
 class MonitorPosition(Enum):
-    LANDSCAPE = "landscape" # Paisagem normal
-    PORTRAIT = "portrait" # Retrato normal
-    LANDSCAPE_FLIPPED = "landscape_flipped" # Paisagem virado
-    PORTRAIT_FLIPPED = "portrait_flipped" # Retrato virado
+    LANDSCAPE = "landscape" 
+    PORTRAIT = "portrait" 
+    LANDSCAPE_FLIPPED = "landscape_flipped" 
+    PORTRAIT_FLIPPED = "portrait_flipped" 
 
-# Mapeamento de posições para ângulos
+
 POSITION_TO_ANGLE = {
     MonitorPosition.LANDSCAPE.value: 0,
     MonitorPosition.PORTRAIT.value: 90,
@@ -65,8 +65,7 @@ def get_monitors_info():
 def configure_monitor():
     try:
         data = request.get_json()
-        
-        # Validar os dados recebidos
+
         if not data or 'monitor' not in data or 'position' not in data:
             return jsonify({
                 'error': 'Dados inválidos. É necessário fornecer monitor e position'
@@ -75,22 +74,19 @@ def configure_monitor():
         monitor_number = data['monitor']
         position = data['position']
 
-        # Validar se a posição é válida
         if position not in [pos.value for pos in MonitorPosition]:
             return jsonify({
                 'error': 'Posição inválida. Posições válidas são: landscape, portrait, landscape_flipped, portrait_flipped'
             }), 400
-
-        # Configurar a rotação do monitor
-        screens = rotatescreen.get_displays()  # Pega todos os monitores
         
-        # Verificar se o número do monitor é válido
+        screens = rotatescreen.get_displays()
+        
         if monitor_number < 0 or monitor_number >= len(screens):
             return jsonify({
                 'error': f'Monitor {monitor_number} não encontrado. Total de monitores: {len(screens)}'
             }), 400
 
-        screen = screens[monitor_number]  # Seleciona o monitor específico
+        screen = screens[monitor_number]  
         angle = POSITION_TO_ANGLE[position]
         screen.rotate_to(angle)
 
