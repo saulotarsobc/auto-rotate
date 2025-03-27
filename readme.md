@@ -1,5 +1,7 @@
 # Auto Rotate - SC
 
+![banner](images/banner.png)
+
 ## Sobre o Projeto
 
 **Auto Rotate - SC** é uma aplicação desenvolvida em Python para controlar a orientação dos monitores de um sistema Windows. Ele fornece uma interface web e um ícone na bandeja do sistema para facilitar o acesso e controle da rotação das telas.
