@@ -3,7 +3,7 @@ name: Build and Release
 on:
   push:
     tags:
-      - "v*" # Quando um tag que inicia com "v" for pushado
+      - "v*"
 
 jobs:
   build:
@@ -27,7 +27,7 @@ jobs:
           pyinstaller --onefile --windowed --add-data "templates;templates" --hidden-import "screeninfo" --hidden-import "rotatescreen" --add-data "icon.ico;." --icon "icon.ico" --name "Auto Rotate - Oluas" main.py
 
       - name: Publicar artefato (executável)
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: auto-rotate-app
           path: dist/Auto\ Rotate\ -\ Oluas.exe
