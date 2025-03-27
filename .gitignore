@@ -5,3 +5,8 @@ __pycache__/
 *.pyd
 *.pyw
 *.pyz
+
+# application artifacts
+main.spec
+dist/
+build/

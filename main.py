@@ -1,9 +1,11 @@
-from flask import Flask, request, jsonify, render_template
-from enum import Enum
+import os
 import rotatescreen
 from screeninfo import get_monitors
+from enum import Enum
 
-app = Flask(__name__)
+from flask import Flask, request, jsonify, render_template
+
+app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), 'templates'))
 
 class MonitorPosition(Enum):
     LANDSCAPE = "landscape" # Paisagem normal
@@ -108,4 +110,4 @@ def configure_monitor():
         }), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80, debug=True) 
+    app.run(host='0.0.0.0', port=5410, debug=False) 
