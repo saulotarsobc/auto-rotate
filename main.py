@@ -3,6 +3,10 @@ import rotatescreen
 from screeninfo import get_monitors
 from enum import Enum
 
+import threading
+import pystray
+from PIL import Image
+
 from flask import Flask, request, jsonify, render_template
 
 app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), 'templates'))
@@ -20,6 +24,19 @@ POSITION_TO_ANGLE = {
     MonitorPosition.LANDSCAPE_FLIPPED.value: 180,
     MonitorPosition.PORTRAIT_FLIPPED.value: 270
 }
+
+def create_tray_icon():
+    # Carrega a imagem do ícone (certifique-se de que o caminho esteja correto)
+    icon_image = Image.open("icon.ico")
+    
+    def on_exit(icon, item):
+        icon.stop()
+        # Se desejar, termine o app (pode usar sys.exit() ou outra lógica)
+        os._exit(0)
+    
+    menu = pystray.Menu(pystray.MenuItem("Sair", on_exit))
+    tray_icon = pystray.Icon("Auto Rotate", icon_image, "Auto Rotate - Oluas", menu)
+    tray_icon.run()
 
 def get_monitor_info():
     system_monitors = get_monitors()
@@ -106,4 +123,7 @@ def configure_monitor():
         }), 500
 
 if __name__ == '__main__':
+    tray_thread = threading.Thread(target=create_tray_icon, daemon=True)
+    tray_thread.start()
+    
     app.run(host='0.0.0.0', port=5410, debug=False) 
