@@ -6,5 +6,5 @@ pyinstaller `
     --hidden-import "rotatescreen" `
     --add-data      "icon.ico;." `
     --icon          "icon.ico" `
-    --name          "Auto Rotate - Oluas" `
+    --name          "Auto Rotate - SC" `
     main.py;

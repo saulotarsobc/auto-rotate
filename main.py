@@ -38,7 +38,7 @@ def create_tray_icon():
         os._exit(0)
     
     menu = pystray.Menu(pystray.MenuItem("Sair", on_exit))
-    tray_icon = pystray.Icon("Auto Rotate", icon_image, "Auto Rotate - Oluas", menu)
+    tray_icon = pystray.Icon("Auto Rotate", icon_image, "Auto Rotate - SC", menu)
     tray_icon.run()
 
 def get_monitor_info():

@@ -1,75 +1,104 @@
-# Auto Rotate Screen
+# Auto Rotate - SC
 
-## Aalgumas sugestões interessantes para melhorar ainda mais o projeto:
+## Sobre o Projeto
 
-1. **Tema Escuro/Claro**
+**Auto Rotate - SC** é uma aplicação desenvolvida em Python para controlar a orientação dos monitores de um sistema Windows. Ele fornece uma interface web e um ícone na bandeja do sistema para facilitar o acesso e controle da rotação das telas.
 
-   - [ ] Adicionar um toggle para alternar entre temas
-   - [ ] Salvar a preferência do usuário no localStorage
-   - [ ] Sincronizar com a preferência do sistema
+## Recursos
 
-2. **Preview Visual**
+- Exibe informações detalhadas dos monitores conectados.
+- Permite alterar a orientação dos monitores para **paisagem**, **retrato**, **paisagem invertida** e **retrato invertido**.
+- Disponibiliza uma API para controle remoto da orientação.
+- Interface na bandeja do sistema para acesso rápido.
 
-   - [ ] Mostrar uma prévia visual da orientação do monitor
-   - [ ] Um ícone/imagem que rotaciona conforme a seleção
-   - [ ] Ajuda a visualizar como ficará antes de aplicar
+## Instalação
 
-3. **Atalhos de Teclado**
+### Requisitos
 
-   - [ ] Teclas de atalho para rotações comuns
-   - [ ] Por exemplo: Ctrl+Alt+L para landscape, Ctrl+Alt+P para portrait
-   - [ ] Funcionalidade mesmo quando o navegador não está aberto
+- Python 3.9+
+- Pip
 
-4. **Configurações Favoritas**
+### Instalação das dependências
 
-   - [ ] Salvar combinações preferidas de monitor/orientação
-   - [ ] Botões de acesso rápido para configurações comuns
-   - [ ] Opção de dar nome às configurações
+Execute o comando abaixo no terminal para instalar todas as dependências necessárias:
 
-5. **Auto-inicialização**
+```sh
+pip install -r requirements.txt
+```
 
-   - [ ] Iniciar com o Windows
-   - [ ] Restaurar última configuração após reiniciar
-   - [ ] Ícone na bandeja do sistema (system tray)
+### Executando a Aplicação
 
-6. **Detecção de Monitores**
+Para iniciar o servidor Flask e o ícone da bandeja, execute:
 
-   - [x] Mostrar informações detalhadas dos monitores (nome, modelo, resolução)
-   - [x] Atualização em tempo real quando conecta/desconecta monitores
-   - [x] Preview mais preciso baseado no aspect ratio real
+```sh
+python main.py
+```
 
-7. **Perfis por Aplicativo**
+Isso iniciará um servidor local na porta `5410`, acessível via navegador em:
 
-   - [ ] Configurar orientações específicas por aplicativo
-   - [ ] Mudar automaticamente quando certo programa é aberto
-   - [ ] Útil para apps que você sempre usa em uma orientação específica
+```
+http://127.0.0.1:5410
+```
 
-8. **API Expandida**
+## API Endpoints
 
-   - [ ] Endpoint para listar monitores e suas características
-   - [ ] Histórico de alterações
-   - [ ] Documentação Swagger/OpenAPI
+### **Obter informações dos monitores**
 
-9. **Melhorias na Interface**
+**GET** `/monitors`
 
-   - [ ] Animações suaves nas transições
-   - [ ] Notificações toast para feedback
-   - [ ] Interface drag-and-drop para reorganizar monitores
-   - [ ] Gráfico visual da disposição dos monitores
+**Resposta:**
 
-10. **Recursos de Acessibilidade**
+```json
+{
+  "status": "success",
+  "data": [
+    {
+      "id": 0,
+      "name": "Monitor 1",
+      "width": 1920,
+      "height": 1080,
+      "is_primary": true
+    }
+  ]
+}
+```
 
-    - [ ] Suporte a leitor de tela
-    - [ ] Temas de alto contraste
-    - [ ] Tamanhos de fonte ajustáveis
+### **Alterar a orientação de um monitor**
 
-11. **Multilíngue**
+**POST** `/monitor`
 
-    - [ ] Suporte a múltiplos idiomas
-    - [ ] Detecção automática do idioma do sistema
-    - [ ] Interface para adicionar traduções
+**Corpo da requisição:**
 
-12. **Backup e Sincronização**
-    - [ ] Exportar/importar configurações
-    - [ ] Sincronização entre dispositivos
-    - [ ] Backup automático das preferências
+```json
+{
+  "monitor": 0,
+  "position": "portrait"
+}
+```
+
+**Posições válidas:**
+
+- `landscape`
+- `portrait`
+- `landscape_flipped`
+- `portrait_flipped`
+
+## Construindo o Executável
+
+Para gerar um executável `.exe`, use o **PyInstaller**:
+
+```sh
+pyinstaller --onefile --windowed --add-data "templates;templates" --hidden-import "screeninfo" --hidden-import "rotatescreen" --add-data "icon.ico;." --icon "icon.ico" --name "Auto_Rotate_SC" main.py
+```
+
+O executável será gerado na pasta `dist/`.
+
+## Contribuição
+
+Contribuições são bem-vindas! Para contribuir:
+
+1. Faça um fork do repositório.
+2. Crie um branch com sua feature: `git checkout -b minha-feature`
+3. Commit suas alterações: `git commit -m 'Adicionei uma nova feature'`
+4. Faça um push do seu branch: `git push origin minha-feature`
+5. Abra um Pull Request.
